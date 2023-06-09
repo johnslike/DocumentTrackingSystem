@@ -95,7 +95,8 @@ Class JOS {
             "lname" => $array['lname'],
             "suffix" => $array['suffix'],
             "access" => $array['access'],
-            "id" => $array['id']
+            "id" => $array['id'],
+
         );
 
         return $_SESSION['userdata'];
@@ -170,9 +171,9 @@ Class JOS {
     public function getNewlyDocument($id){
 
                 $connection = $this->openConnection();
-                $stmt = $connection->prepare("SELECT * FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN type_exam t3 ON t1.type = t3.id LEFT JOIN places_exam t4 ON t1.place_exam = t4.id LEFT JOIN setting_accounts t5 ON t1.added_by = t5.id LEFT JOIN ro_no t6 ON t1.id = t6.requestor_id LEFT JOIN signer t7 ON t1.sign_by = t7.id");
+                $stmt = $connection->prepare("SELECT t1.*, t2.division FROM (SELECT * from documents WHERE division_id = ?) t1 LEFT JOIN setting_divisions t2 ON t1.division_id = t2.id");
                 $stmt->execute([$id]);
-                $Details = $stmt->fetch();
+                $Details = $stmt->fetchall();
                 $total= $stmt->rowCount();
 
                 if($total > 0){
