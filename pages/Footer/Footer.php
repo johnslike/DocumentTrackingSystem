@@ -3,7 +3,7 @@
     <div class="float-right d-none d-sm-block">
       <b></b> Civil Service Commission for BARMM
     </div>
-    <strong>Certificates of Eligibility Database</strong>
+    <strong>Document Tracking System</strong>
   </footer>
 </div>
 

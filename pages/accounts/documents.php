@@ -1,7 +1,7 @@
 <?php
 require_once('../db/connect_db.php');
 
-
+$id = $_GET['id'];
 
 include('useraccess.php');
 include('../Header/Header.php');
@@ -43,7 +43,7 @@ include('../Header/Header.php');
           <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="m-0 text-center text-success">Ingoing Documents</h1>
+                  <h3 class="m-0 text-center text-success">Incoming/New Documents</h1>
                 </div>
               <div class="card-body">
 
@@ -55,7 +55,9 @@ include('../Header/Header.php');
                     <h6 class="card-title">Special title treatment</h6>
 
                     <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+
+                    <button class="btn btn-xs btn-success">Receive</button>
+                    <button class="btn btn-xs btn-primary">Forward</button>
                   </div>
                 </div>
 
@@ -66,7 +68,7 @@ include('../Header/Header.php');
       <div class="col-lg-4">
         <div class="card">
           <div class="card-header">
-            <h3 class="m-0 text-center text-primary">Outgoing Documents</h1>
+            <h3 class="m-0 text-center text-primary">Received/Forwarded Documents</h1>
           </div>
           <div class="card-body">
 
@@ -90,11 +92,11 @@ include('../Header/Header.php');
       <div class="col-lg-4">
         <div class="card">
           <div class="card-header">
-            <h3 class="m-0 text-center text-warning">Division Documents</h1>
+            <h3 class="m-0 text-center text-dark">Division or All Documents</h1>
           </div>
           <div class="card-body">
 
-            <div class="card card-warning card-outline">
+            <div class="card card-dark card-outline">
               <div class="card-header">
                 <h5 class="card-title m-0">Remarks/Subject</h5>
               </div>

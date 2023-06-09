@@ -167,6 +167,23 @@ Class JOS {
     }
 
 
+    public function getNewlyDocument($id){
+
+                $connection = $this->openConnection();
+                $stmt = $connection->prepare("SELECT * FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN type_exam t3 ON t1.type = t3.id LEFT JOIN places_exam t4 ON t1.place_exam = t4.id LEFT JOIN setting_accounts t5 ON t1.added_by = t5.id LEFT JOIN ro_no t6 ON t1.id = t6.requestor_id LEFT JOIN signer t7 ON t1.sign_by = t7.id");
+                $stmt->execute([$id]);
+                $Details = $stmt->fetch();
+                $total= $stmt->rowCount();
+
+                if($total > 0){
+                    return $Details;
+                }else{
+                    return FALSE;
+                }
+
+                }
+
+
     public function add_account()
     {
         if(isset($_POST['add_account']))
