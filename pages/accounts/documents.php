@@ -90,7 +90,7 @@ include('../Header/Header.php');
       <div class="col-lg-4">
         <div class="card">
           <div class="card-header">
-            <h3 class="m-0 text-center text-warning">Outgoing Documents</h1>
+            <h3 class="m-0 text-center text-warning">Division Documents</h1>
           </div>
           <div class="card-body">
 

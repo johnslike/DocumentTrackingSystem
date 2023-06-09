@@ -283,32 +283,6 @@ Class JOS {
     }
 
 
-
-    public function add_request(){
-
-
-        if(isset($_POST['request'])){
-
-            $request_by = $_POST['request_by'];
-            $date_request = $_POST['date_request'];
-            $problem_request = $_POST['problem_request'];
-
-            {
-
-                $connection = $this->openConnection();
-                $stmt = $connection->prepare("INSERT INTO `request_problem`(`user_id`, date_requested, `request`) VALUES(?,?,?)");
-                $stmt->execute([$request_by, $date_request, $problem_request]);
-
-
-                echo header("Location:../pages/request.php");
-
-
-            }
-        }
-
-        }
-
-
     public function show_404(){
 
         http_response_code(404);
@@ -322,74 +296,6 @@ Class JOS {
     {
         $connection = $this->openConnection();
         $stmt = $connection->prepare("SELECT t1.id, t1.fname, t1.minitial, t1.lname, t1.suffix, t1.date_added, t2.position, t2.id as pos_id, t3.division, t3.id as div_id FROM setting_users t1 LEFT JOIN setting_positions t2 ON t1.position_id = t2.id LEFT JOIN setting_divisions t3 ON t1.division_id = t3.id ORDER BY t1.date_added DESC");
-        $stmt->execute();
-        $emp = $stmt->fetchAll();
-        $userCount = $stmt->rowCount();
-
-        if($userCount > 0){
-            return $emp;
-        }else{
-            return 0;
-        }
-
-    }
-
-
-    public function getUnits()
-    {
-        $connection = $this->openConnection();
-        $stmt = $connection->prepare("SELECT t1.id, t1.ict_no, t1.serial_no, t1.type, t1.status, t2.fname, t2.minitial, t2.lname, t2.suffix FROM ict_units t1 LEFT JOIN setting_users t2 ON t1.user_id = t2.id ORDER BY t1.date_added DESC");
-        $stmt->execute();
-        $emp = $stmt->fetchAll();
-        $userCount = $stmt->rowCount();
-
-        if($userCount > 0){
-            return $emp;
-        }else{
-            return 0;
-        }
-
-    }
-
-
-    public function getPendingRequest()
-    {
-        $connection = $this->openConnection();
-        $stmt = $connection->prepare("SELECT t1.id, t1.request, t1.date_requested, t2.id as id_user, t2.fname, t2.minitial, t2.lname, t2.suffix, t2.date_added, t3.division FROM request_problem t1 LEFT JOIN setting_users t2 ON t1.user_id = t2.id LEFT JOIN setting_divisions t3 ON t2.division_id = t3.id WHERE t1.action_taken is NULL ORDER BY t1.date_added DESC");
-        $stmt->execute();
-        $emp = $stmt->fetchAll();
-        $userCount = $stmt->rowCount();
-
-        if($userCount > 0){
-            return $emp;
-        }else{
-            return 0;
-        }
-
-    }
-
-
-    public function getActedRequest()
-    {
-        $connection = $this->openConnection();
-        $stmt = $connection->prepare("SELECT t1.id, t1.request, t1.date_requested, t2.id as id_user, t2.fname, t2.minitial, t2.lname, t2.suffix, t2.date_added, t3.division FROM request_problem t1 LEFT JOIN setting_users t2 ON t1.user_id = t2.id LEFT JOIN setting_divisions t3 ON t2.division_id = t3.id WHERE t1.action_taken is not NULL ORDER BY t1.date_added DESC");
-        $stmt->execute();
-        $emp = $stmt->fetchAll();
-        $userCount = $stmt->rowCount();
-
-        if($userCount > 0){
-            return $emp;
-        }else{
-            return 0;
-        }
-
-    }
-
-
-    public function getAllRequest()
-    {
-        $connection = $this->openConnection();
-        $stmt = $connection->prepare("SELECT t1.id, t1.request, t1.action_taken, t1.date_acted, t1.date_requested, t2.id as id_user, t2.fname, t2.minitial, t2.lname, t2.suffix, t2.date_added, t3.division FROM request_problem t1 LEFT JOIN setting_users t2 ON t1.user_id = t2.id LEFT JOIN setting_divisions t3 ON t2.division_id = t3.id ORDER BY t1.date_added DESC");
         $stmt->execute();
         $emp = $stmt->fetchAll();
         $userCount = $stmt->rowCount();
@@ -432,92 +338,6 @@ Class JOS {
             return $emp;
         }else{
             return 0;
-        }
-
-    }
-
-
-    public function getUnitDetails($id){
-
-        $connection = $this->openConnection();
-        $stmt = $connection->prepare("SELECT t1.id, t1.user_id, t1.ict_no, t1.serial_no, t1.type, t1.brand, t1.brief_specs, t1.date_acquired, t1.status, t1.remarks, t2.fname, t2.minitial, t2.lname, t2.suffix, t3.division, t4.position FROM (SELECT * from ict_units WHERE id = ?) t1 LEFT JOIN setting_users t2 ON t1.user_id = t2.id LEFT JOIN setting_divisions t3 ON t3.id = t2.division_id LEFT JOIN setting_positions t4 ON t4.id = t2.position_id");
-        $stmt->execute([$id]);
-        $file = $stmt->fetch();
-        $total= $stmt->rowCount();
-
-        if($total > 0){
-            return $file;
-        }else{
-            return FALSE;
-        }
-
-
-        }
-
-
-    public function getUnitCorrective($id){
-
-        $connection = $this->openConnection();
-        $stmt = $connection->prepare("SELECT t1.id, t2.type, t2.status, t3.request, t3.action_taken, t3.date_requested FROM (SELECT * from ict_units WHERE id = ?) t1 LEFT JOIN corrective_accomplishment t2 ON t1.id = t2.unit_id LEFT JOIN request_problem t3 ON t2.problem_id = t3.id");
-        $stmt->execute([$id]);
-        $file = $stmt->fetchall();
-        $total= $stmt->rowCount();
-
-        if($total > 0){
-            return $file;
-        }else{
-            return FALSE;
-        }
-
-
-        }
-
-
-    public function action_other(){
-
-
-        if(isset($_POST['update_other'])){
-
-            $id = $_POST['id'];
-            $date_acted = $_POST['date_acted'];
-            $status = $_POST['status'];
-            $action_taken = $_POST['action_taken'];
-            $taken_by = $_POST['taken_by'];
-
-                $connection = $this->openConnection();
-                $stmt = $connection->prepare("INSERT INTO `other_accomplishment`(`request_id`, `status`) VALUES(?,?)");
-                $stmt->execute([$id, $status]);
-
-                $connection->query("UPDATE `request_problem` SET `action_taken` = '$action_taken', `date_acted` = '$date_acted', `CorrectiveOrOther` = 2, `action_taken_by` = '$taken_by', `date_updated` = now() WHERE `id` = '$id'");
-
-                echo header("Location:requests_pendings.php");
-
-        }
-
-    }
-
-
-    public function action_unit(){
-
-
-        if(isset($_POST['update_unit'])){
-
-            $id = $_POST['id'];
-            $date_acted = $_POST['date_acted'];
-            $type = $_POST['type'];
-            $status = $_POST['status'];
-            $unit_id = $_POST['unit_id'];
-            $action_taken = $_POST['action_taken'];
-            $taken_by = $_POST['taken_by'];
-
-                $connection = $this->openConnection();
-                $stmt = $connection->prepare("INSERT INTO `corrective_accomplishment`(`unit_id`, problem_id, `type`, `status`) VALUES(?,?,?,?)");
-                $stmt->execute([$unit_id, $id, $type, $status]);
-
-                $connection->query("UPDATE `request_problem` SET `action_taken` = '$action_taken', `date_acted` = '$date_acted', `CorrectiveOrOther` = 1, `action_taken_by` = '$taken_by', `date_updated` = now() WHERE `id` = '$id'");
-
-                echo header("Location:requests_pendings.php");
-
         }
 
     }
@@ -680,41 +500,6 @@ Class JOS {
                 $connection->query("DELETE FROM `setting_users` WHERE `id` = '$id'");
 
                 echo header("Location: setting_users.php");
-
-
-        }
-    }
-
-
-    public function delete_unit(){
-
-        if(isset($_POST['delete_unit'])){
-
-            $id = $_POST['id'];
-
-                $connection = $this->openConnection();
-                $connection->query("DELETE FROM `ict_units` WHERE `id` = '$id'");
-                $connection->query("DELETE FROM `corrective_accomplishment` WHERE `unit_id` = '$id'");
-
-                echo header("Location: ict_units.php");
-
-
-        }
-    }
-
-
-    public function delete_request(){
-
-        if(isset($_POST['delete_request'])){
-
-            $id = $_POST['id'];
-
-                $connection = $this->openConnection();
-                $connection->query("DELETE FROM `request_problem` WHERE `id` = '$id'");
-                $connection->query("DELETE FROM `corrective_accomplishment` WHERE `problem_id` = '$id'");
-                $connection->query("DELETE FROM `other_accomplishment` WHERE `request_id` = '$id'");
-
-                echo header("Location: requests_all.php");
 
 
         }
