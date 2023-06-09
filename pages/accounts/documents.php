@@ -1,7 +1,7 @@
 <?php
 require_once('../db/connect_db.php');
 
-$id = $_GET['id'];
+// $id = $_GET['id'];
 
 include('useraccess.php');
 include('../Header/Header.php');
