@@ -60,7 +60,7 @@ Class JOS {
             $password = $_POST['password'];
 
                 $connection = $this->openConnection();
-                $stmt = $connection->prepare("SELECT t1.id, t1.username, t1.password, t1.access, t2.fname, t2.minitial, t2.lname, t2.suffix FROM setting_accounts t1 LEFT JOIN setting_users t2 ON t1.user_id = t2.id WHERE username = ? AND `password` = ?");
+                $stmt = $connection->prepare("SELECT t1.username, t1.password, t1.access, t2.id, t2.fname, t2.minitial, t2.lname, t2.suffix, t2.division_id FROM setting_accounts t1 LEFT JOIN setting_users t2 ON t1.user_id = t2.id WHERE username = ? AND `password` = ?");
                 $stmt->execute([$username, $password]);
                 $user = $stmt->fetch();
                 $total = $stmt->rowCount();
@@ -96,6 +96,7 @@ Class JOS {
             "suffix" => $array['suffix'],
             "access" => $array['access'],
             "id" => $array['id'],
+            "division_id" => $array['division_id']
 
         );
 
@@ -170,6 +171,7 @@ Class JOS {
 
     public function getNewlyDocument($id){
 
+
                 $connection = $this->openConnection();
                 $stmt = $connection->prepare("SELECT t1.*, t2.division FROM (SELECT * from documents WHERE division_id = ?) t1 LEFT JOIN setting_divisions t2 ON t1.division_id = t2.id");
                 $stmt->execute([$id]);
@@ -183,6 +185,149 @@ Class JOS {
                 }
 
                 }
+
+
+    public function add_document(){
+
+
+        if(isset($_POST['add_document'])){
+            
+            $user_id = $_POST['user_id'];
+            $division_id = $_POST['division_id'];
+            $tracking_no = $_POST['tracking_no'];
+            $subject = $_POST['subject'];
+            $type = $_POST['type'];
+            $status = $_POST['status'];
+            $remarks = $_POST['remarks'];
+
+            {
+            
+                $connection = $this->openConnection();
+                $stmt = $connection->prepare("INSERT INTO `documents`(`tracking_no`, `subject`, `type`, `remarks`, `division_id`, `creator_id`, `status`) VALUES(?,?,?,?,?,?,?)");
+                $stmt->execute([$tracking_no, $subject, $type, $remarks, $division_id, $user_id, $status]);
+
+
+                echo header("Location:../accounts/documents");
+                
+            
+            }
+        }
+                
+        }
+
+
+
+    public function receive_new_document(){
+
+
+        if(isset($_POST['receive_document'])){
+            
+            $document_id = $_POST['document_id'];
+            $tracking_no = $_POST['tracking_no'];
+            $acted_division = $_POST['acted_division'];
+            $user_id = $_POST['user_id'];
+            $status = $_POST['status'];
+            $remarks = $_POST['remarks'];
+
+            {
+            
+                $connection = $this->openConnection();
+                $stmt = $connection->prepare("INSERT INTO `document_log`(`document_id`, `tracking_no`, `acted_by_division_id`, `acted_by_user_id`, `status`, `remarks`) VALUES(?,?,?,?,?,?)");
+                $stmt->execute([$document_id, $tracking_no, $acted_division, $user_id, $status, $remarks]);
+
+                $connection->query("UPDATE `documents` SET `route_to_division_id` = '$acted_division', `acted_by_user_id` = '$user_id', `status` = '$status' WHERE `id` = '$document_id'");
+
+                echo header("Location:../accounts/documents");
+            
+            }
+        }
+                
+        }
+
+
+    public function return_document(){
+
+
+        if(isset($_POST['return_document'])){
+            
+            $document_id = $_POST['document_id'];
+            $tracking_no = $_POST['tracking_no'];
+            $acted_division = $_POST['acted_division'];
+            $user_id = $_POST['user_id'];
+            $status = $_POST['status'];
+            $remarks = $_POST['remarks'];
+
+            {
+            
+                $connection = $this->openConnection();
+                $stmt = $connection->prepare("INSERT INTO `document_log`(`document_id`, `tracking_no`, `acted_by_division_id`, `acted_by_user_id`, `status`, `remarks`) VALUES(?,?,?,?,?,?)");
+                $stmt->execute([$document_id, $tracking_no, $acted_division, $user_id, $status, $remarks]);
+
+                $connection->query("UPDATE `documents` SET `status` = '$status' WHERE `id` = '$document_id'");
+
+                echo header("Location:../accounts/documents");
+            
+            }
+        }
+                
+        }
+
+
+    public function end_cycle_document(){
+
+
+        if(isset($_POST['end_cycle_document'])){
+            
+            $document_id = $_POST['document_id'];
+            $tracking_no = $_POST['tracking_no'];
+            $end_to_division_id = $_POST['end_to_division_id'];
+            $user_id = $_POST['user_id'];
+            $status = $_POST['status'];
+            $remarks = $_POST['remarks'];
+
+            {
+            
+                $connection = $this->openConnection();
+                $stmt = $connection->prepare("INSERT INTO `document_log`(`document_id`, `tracking_no`, `acted_by_division_id`, `acted_by_user_id`, `status`, `remarks`) VALUES(?,?,?,?,?,?)");
+                $stmt->execute([$document_id, $tracking_no, $end_to_division_id, $user_id, $status, $remarks]);
+
+                $connection->query("UPDATE `documents` SET `status` = '$status' WHERE `id` = '$document_id'");
+
+                echo header("Location:../accounts/documents");
+            
+            }
+        }
+                
+        }
+
+
+    public function forward_new_document(){
+
+
+        if(isset($_POST['forward_new_document'])){
+            
+            $document_id = $_POST['document_id'];
+            $tracking_no = $_POST['tracking_no'];
+            $routed_to_division_id = $_POST['routed_to_division_id'];
+            $user_id = $_POST['user_id'];
+            $status = $_POST['status'];
+            $remarks = $_POST['remarks'];
+
+            {
+            
+                $connection = $this->openConnection();
+                $stmt = $connection->prepare("INSERT INTO `document_log`(`document_id`, `tracking_no`, `acted_by_division_id`, `acted_by_user_id`, `status`, `remarks`) VALUES(?,?,?,?,?,?)");
+                $stmt->execute([$document_id, $tracking_no, $routed_to_division_id, $user_id, $status, $remarks]);
+
+                $connection->query("UPDATE `documents` SET `route_to_division_id` = '$routed_to_division_id', `acted_by_user_id` = '$user_id', `status` = '$status' WHERE `id` = '$document_id'");
+
+                echo header("Location:../accounts/documents");
+                
+            
+            }
+        }
+                
+        }
 
 
     public function add_account()
@@ -223,31 +368,6 @@ Class JOS {
                 $stmt->execute([$fname,$mintial,$lname,$suffix,$division,$position]);
 
                 echo header ("Location: setting_users.php");
-
-
-        }
-    }
-
-
-    public function add_unit()
-    {
-        if(isset($_POST['add_unit']))
-        {
-            $user = $_POST['user'];
-            $ict_no = $_POST['ict_no'];
-            $serial_no = $_POST['serial_no'];
-            $type = $_POST['type'];
-            $brand = $_POST['brand'];
-            $specs = $_POST['specs'];
-            $acquired = $_POST['acquired'];
-            $status = $_POST['status'];
-
-
-                $connection = $this->openConnection();
-                $stmt = $connection->prepare("INSERT INTO ict_units(`user_id`, `ict_no`, serial_no, `type`, brand, brief_specs, date_acquired, `status`) VALUES(?,?,?,?,?,?,?,?)");
-                $stmt->execute([$user,$ict_no,$serial_no,$type,$brand,$specs,$acquired,$status]);
-
-                echo header ("Location: ict_units.php");
 
 
         }
@@ -403,32 +523,6 @@ Class JOS {
     }
 
 
-    public function update_ictDetails(){
-
-
-        if(isset($_POST['update_details'])){
-
-            $id = $_POST['id'];
-            $user = $_POST['user'];
-            $ict_no = $_POST['ict_no'];
-            $serial_no = $_POST['serial_no'];
-            $type = $_POST['type'];
-            $brand = $_POST['brand'];
-            $specs = $_POST['specs'];
-            $acquired = $_POST['acquired'];
-            $status = $_POST['status'];
-            $remarks = $_POST['remarks'];
-
-                $connection = $this->openConnection();
-                $connection->query("UPDATE `ict_units` SET `user_id` = '$user', `ict_no` = '$ict_no', `serial_no` = '$serial_no', `type` = '$type', `brand` = '$brand', `brief_specs` = '$specs', `date_acquired` = '$acquired', `status` = '$status', `remarks` = '$remarks', `date_updated` = now() WHERE `id` = '$id'");
-
-                echo header("Location:Unit_Details.php?id=".$id);
-
-        }
-
-    }
-
-
     public function update_user(){
 
 
@@ -486,27 +580,6 @@ Class JOS {
         }
 
     }
-
-
-    public function update_details(){
-
-
-        if(isset($_POST['btn_update_details'])){
-
-                $id = $_POST['id'];
-                $type = $_POST['type'];
-                $to = $_POST['to'];
-                $subject = $_POST['subject'];
-
-                $connection = $this->openConnection();
-                $connection->query("UPDATE `log_db` SET `type` = '$type', `subject` = '$subject', `date_updated` = now() WHERE `id` = '$id'");
-
-                echo header("Location:Details.php?id=".$id);
-
-        }
-
-    }
-
 
     public function delete_user(){
 
