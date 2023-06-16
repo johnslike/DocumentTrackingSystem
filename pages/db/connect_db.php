@@ -198,7 +198,6 @@ Class JOS {
             $subject = $_POST['subject'];
             $type = $_POST['type'];
             $status = $_POST['status'];
-            // $remarks = $_POST['remarks'];
 
             {
 
@@ -206,9 +205,15 @@ Class JOS {
                 $stmt = $connection->prepare("INSERT INTO `documents`(`tracking_no`, `subject`, `type`, `division_id`, `creator_id`, `status`) VALUES(?,?,?,?,?,?)");
                 $stmt->execute([$tracking_no, $subject, $type, $division_id, $user_id, $status]);
 
+              //   if($stmt === TRUE){
+              //   $_SESSION['msg'] = "Thanks!";
+              //   $_SESSION['msg_status'] = "success!";
 
-                echo header("Location:../accounts/documents");
+              // }
 
+              // echo header("Location:../accounts/documents");
+
+                    echo header("Location:../accounts/documents?msg=add_document");
 
             }
         }
@@ -300,35 +305,6 @@ Class JOS {
         }
 
         }
-
-
-    // public function return_document(){
-
-
-    //     if(isset($_POST['return_document'])){
-
-    //         $document_id = $_POST['document_id'];
-    //         $tracking_no = $_POST['tracking_no'];
-    //         $routed_to_division_id = $_POST['routed_to_division_id'];
-    //         $user_id = $_POST['user_id'];
-    //         $status = $_POST['status'];
-    //         $remarks = $_POST['remarks'];
-
-    //         {
-
-    //             $connection = $this->openConnection();
-    //             $stmt = $connection->prepare("INSERT INTO `document_log`(`document_id`, `tracking_no`, `acted_by_division_id`, `acted_by_user_id`, `status`, `remarks`) VALUES(?,?,?,?,?,?)");
-    //             $stmt->execute([$document_id, $tracking_no, $routed_to_division_id, $user_id, $status, $remarks]);
-
-    //             $connection->query("UPDATE `documents` SET `route_to_division_id` = '$routed_to_division_id', `acted_by_user_id` = '$user_id', `status` = '$status', `latest_remarks` = '$remarks' WHERE `id` = '$document_id'");
-
-    //             echo header("Location:../accounts/documents");
-
-
-    //         }
-    //     }
-
-    //     }
 
 
     public function return_to_sender(){
@@ -509,6 +485,39 @@ Class JOS {
         }
 
     }
+
+
+    public function getDocumentsDetails($id){
+
+      $connection = $this->openConnection();
+      $stmt = $connection->prepare("SELECT t1.* FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN document_log t2 ON t1.id = t2.document_id ORDER BY t1.date_added DESC");
+      $stmt->execute([$id]);
+      $Details = $stmt->fetch();
+      $total= $stmt->rowCount();
+
+      if($total > 0){
+          return $Details;
+      }else{
+          return FALSE;
+      }
+    }
+
+
+    public function getTrackingno($id){
+
+      $connection = $this->openConnection();
+      $stmt = $connection->prepare("SELECT t1.*, t2.division, t3.fname, t3.minitial, t3.lname, t3.suffix FROM document_log t1 LEFT JOIN setting_divisions t2 ON t1.acted_by_division_id = t2.id LEFT JOIN setting_users t3 ON t1.acted_by_user_id = t3.id WHERE document_id = ? GROUP BY t1.id ORDER BY t1.date_acted ASC");
+      $stmt->execute([$id]);
+      $Details = $stmt->fetchall();
+      $total= $stmt->rowCount();
+
+  if($total > 0){
+      return $Details;
+  }else{
+      return FALSE;
+  }
+
+  }
 
 
     public function update_account(){

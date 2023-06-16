@@ -23,13 +23,12 @@ require_once('../db/connect_db.php');
           <!-- <li class="nav-item">
             <a href="index3.html" class="nav-link">Home</a>
           </li> -->
-              <!-- <li class="nav-item">
-                <a href="ListofCOE.php" class="nav-link">List of COE</a>
-              </li> -->
-          <li class="nav-item">
-            <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add_document">
-            <i class="fas fa-plus"></i></a>
-          </li>
+              <li class="nav-item">
+                <a href="documents" class="nav-link">Home</a>
+              </li>
+              <li class="nav-item">
+              <a href="DocumentList" class="nav-link">List of Documents</a>
+              </li>
         </ul>
 
       </div>

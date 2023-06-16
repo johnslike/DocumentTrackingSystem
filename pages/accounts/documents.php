@@ -10,6 +10,7 @@ $store->delete_document($_POST);
 
 include('useraccess.php');
 include('../Header/Header.php');
+
 ?>
 
 
@@ -34,11 +35,12 @@ include('../Header/Header.php');
   <div class="content-header">
       <div class="container">
         <div class="row mb-2">
-          <!-- <div class="col-sm-6">
-          <a class="btn btn-primary" data-toggle="modal" data-target="#add_document">
-                    <i class="fas fa-plus"></i></a>
-          </div> -->
+          <div class="col-sm-6">
+            <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#add_document">
+            <i class="fas fa-plus"></i> Add Document</a>
+          </div>
           <!-- /.col -->
+
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -237,7 +239,7 @@ include('../Header/Header.php');
       <div class="col-lg-4">
         <div class="card">
           <div class="card-header">
-            <h4 class="m-0 text-center text-dark">Received/New Documents</h4>
+            <h4 class="m-0 text-center text-dark"> New/Received Documents</h4>
           </div>
           <div class="card-body">
 
@@ -261,7 +263,7 @@ include('../Header/Header.php');
 
                     <button class="btn btn-xs btn-primary" data-toggle="modal" data-target="#forward_document<?php echo $documents['id']?>" <?php if($documents['status'] == 2){ echo "hidden";}?>><i class="fas fa-share"></i> Forward</button>
 
-                    <button class="btn btn-xs btn-danger float-right" data-toggle="modal" data-target="#delete_document<?php echo $documents['id']?>" <?php if($documents['creator_id'] != $userdetails['id']){ echo "hidden";}?>><i class="fas fa-trash"></i> Delete</button>
+                    <button class="btn btn-xs btn-danger float-right" data-toggle="modal" data-target="#delete_document<?php echo $documents['id']?>" <?php if($documents['creator_id'] != $userdetails['id'] || $documents['status'] != 1){ echo "hidden";}?>><i class="fas fa-trash"></i> Delete</button>
 
                     <button class="btn btn-xs btn-warning float-right" data-toggle="modal" data-target="#end_document<?php echo $documents['id']?>" <?php if($documents['status'] == 1){ echo "hidden";}?>><i class="fas fa-check"></i> End Cycle</button>
                   </div>
@@ -509,11 +511,13 @@ include('../Header/Header.php');
                   </div>
                 </div>
 
+
+
                 <div class="modal fade" id="track_document<?php echo $documents['id']?>">
                         <div class="modal-dialog modal-lg">
                           <div class="modal-content">
-                            <div class="invoice p-3 mb-3">
-                                <!-- title row -->
+
+                            <div class="card-body">
                                 <div class="row">
                                   <div class="col-12">
                                     <h4>
@@ -534,26 +538,19 @@ include('../Header/Header.php');
                                   </div>
                                   <!-- /.col -->
                                 </div>
-                                <!-- info row -->
-                                <div class="row invoice-info">
-                                  <div class="col-sm-12 invoice-col">
-                                  <dl class="row">
-                                    <dt class="col-sm-2">Tracking no</dt>
-                                    <dd class="col-sm-10"><?php echo $documents['tracking_no'] ?></dd>
-                                    <dt class="col-sm-2">Subject</dt>
-                                    <dd class="col-sm-10"><?php echo $documents['subject'] ?></dd>
-                                    <dt class="col-sm-2">Type</dt>
-                                    <dd class="col-sm-10"><?php echo $documents['type'] ?></dd>
-                                  </dl>
-                                  </div>
-                                  <!-- /.col -->
-                                </div>
-                                <!-- /.row -->
 
-                                <!-- Table row -->
-                                <div class="row">
-                                  <div class="col-12 table-responsive">
-                                    <table class="table table-striped">
+
+
+                                      <dl class="row">
+                                        <dt class="col-sm-2">Tracking no</dt>
+                                        <dd class="col-sm-10"><?php echo $documents['tracking_no'] ?></dd>
+                                        <dt class="col-sm-2">Subject</dt>
+                                        <dd class="col-sm-10"><?php echo $documents['subject'] ?></dd>
+                                        <dt class="col-sm-2">Type</dt>
+                                        <dd class="col-sm-10"><?php echo $documents['type'] ?></dd>
+                                      </dl>
+
+                                      <table class="table table-striped">
                                       <thead>
                                       <tr>
                                         <th>Action</th>
@@ -591,27 +588,19 @@ include('../Header/Header.php');
                                       <?php } ?>
                                       </tbody>
                                     </table>
-                                  </div>
-                                  <!-- /.col -->
-                                </div>
-                                <!-- /.row -->
 
-                                <!-- this row will not appear when printing -->
-                                <div class="row no-print">
-                                  <div class="col-12">
-                                    <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                              <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+                            </div>
+                          </div>
 
-                                  </div>
-                                </div>
-
-                              </div>
-                              </div>
                           <!-- /.modal-content -->
                         </div>
                         <!-- /.modal-dialog -->
                       </div>
                       <!-- /.modal -->
-
 
                 <?php } ?>
 
@@ -682,10 +671,13 @@ include('../Header/Header.php');
                           <textarea name="remarks" class="form-control" rows="2" placeholder="Enter remarks ..." required></textarea>
                         </div>
                     </div> -->
+
+
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               <button type="submit" name="add_document" id="" class="btn btn-success">Add Document</button>
+
             </div>
           </div>
           </form>
@@ -696,8 +688,55 @@ include('../Header/Header.php');
       <!-- /.modal -->
 
 
+
+
+
   <?php include('../Footer/Footer.php'); ?>
 
 
 
   <?php include('../Footer/Script.php'); ?>
+
+
+  <?php if (isset($_GET["msg"]) && $_GET["msg"] == 'add_document') { ?>
+
+          echo "<script>
+
+          $(function(){
+                Swal.fire({
+                position: 'top-end',
+                toast: true,
+                icon: 'success',
+                title: 'Saved!',
+                text: 'Na saved na ang documents!',
+                showConfirmButton: false,
+                timer: 3000
+            })
+        });
+
+        </script>"; <?php
+         unset($_GET['msg']);}
+           ?>
+
+
+  <!-- <?php
+
+  if (isset($_SESSION['msg']) && $_SESSION['msg'] != '') {
+?>
+         <script>
+
+          $(function(){
+                Swal.fire({
+                position: "top-end",
+                toast: true,
+                icon: "success",
+                title: "Saved!",
+                text: "Na saved na ang documents!",
+                showConfirmButton: false,
+                timer: 3000
+            })
+        });
+
+        </script>
+          <?php unset($_SESSION['msg']);} ?> -->
+

@@ -31,7 +31,10 @@
   <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <!-- pace-progress -->
   <link rel="stylesheet" href="../../plugins/pace-progress/themes/black/pace-theme-flat-top.css">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-  
+
+
 </head>
