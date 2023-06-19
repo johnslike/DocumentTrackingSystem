@@ -9,7 +9,7 @@ require_once('../db/connect_db.php');
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container">
       <a href="setting_accounts.php" class="navbar-brand">
-        <img src="../../dist/img/LOGO.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <img src="../dist/img/LOGO.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light"><?php echo $userdetails['fname']." ".$userdetails['minitial']." ".$userdetails['lname']." ".$userdetails['suffix'] ?></span>
       </a>
 

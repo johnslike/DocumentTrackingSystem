@@ -37,7 +37,7 @@ include('../Header/Header.php');
         <div class="row mb-2">
           <div class="col-sm-6">
             <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#add_document">
-            <i class="fas fa-plus"></i> Add Document</a>
+            <i class="fas fa-plus"></i> Add New Document</a>
           </div>
           <!-- /.col -->
 
@@ -504,7 +504,23 @@ include('../Header/Header.php');
 
                     <p class="card-text text-xs text-muted"><?php echo "Latest Remarks: ".$documents['latest_remarks'];?></p>
 
-                    <span class="card-text text-xs text-success float-right"><i><?php if($documents['route_to_division_id'] == $division_id){ echo "Currently at your division";}elseif($documents['route_to_division_id'] != $division_id){ echo "Currently at ".$documents['division'];}?></i></span>
+                    <!-- <span class="card-text text-xs text-success float-right"><i><?php if($documents['route_to_division_id'] == $division_id){ echo "Currently at your division";}elseif($documents['route_to_division_id'] != $division_id){ echo "Currently at ".$documents['division'];}?></i></span> -->
+
+                    <span class="card-text text-sm text-success float-right"><i><?php
+
+                    if($documents['status'] == 2 && $documents['route_to_division_id'] != $division_id){ echo "<span class='badge badge-primary'>Forwarded, Currently at ".$documents['division']."</span>";}
+
+                    elseif($documents['status'] == 2 && $documents['route_to_division_id'] == $division_id){ echo "<span class='badge badge-primary'>Forwarded, Currently at your division</span>";}
+
+                    elseif($documents['status'] == 3 && $documents['route_to_division_id'] != $division_id){ echo "<span class='badge badge-success'>Received, Currently at ".$documents['division']."</span>";}
+
+                    elseif($documents['status'] == 3 && $documents['route_to_division_id'] == $division_id){ echo "<span class='badge badge-success'>Received, Currently at your division</span>";}
+
+                    elseif($documents['status'] == 5 && $documents['route_to_division_id'] != $division_id){ echo "<span class='badge badge-danger'>Returned, Currently at ".$documents['division']."</span>";}
+
+                    elseif($documents['status'] == 5 && $documents['route_to_division_id'] == $division_id){ echo "<span class='badge badge-danger'>Returned, Currently at your division</span>";}
+
+                   ?></i></span>
                     <br>
 
                     <button class="btn btn-xs btn-primary" data-toggle="modal" data-target="#track_document<?php echo $documents['id']?>"><i class="fas fa-clock"></i> Track</button>
