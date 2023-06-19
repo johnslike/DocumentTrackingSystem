@@ -3,6 +3,8 @@ require_once('../db/connect_db.php');
 $id = $_GET['id'];
 $Details = $store->getDocumentsDetails($id);
 $Track = $store->getTrackingno($id);
+$Files = $store->get_files($id);
+$store->add_files($_POST);
 
 include('useraccess.php');
 include('../Header/Header.php');
@@ -87,7 +89,7 @@ include('../Header/Header.php');
                   </li>
                 </ul>
 
-                <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#select_signer" <?php if($Details['id'] == NULL){ ?> hidden <?php }?>><b>Upload Files</b></button>
+                <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#add_files" <?php if($Details['id'] == NULL){ ?> hidden <?php }?>><b>Upload Files</b></button>
 
               </div>
               <!-- /.card-body -->
@@ -96,7 +98,7 @@ include('../Header/Header.php');
 
           </div>
           <!-- /.col -->
-          <div class="col-md-9">
+          <div class="col-md-6">
             <div class="card">
               <!-- <div class="card-header">
                 <a href="ListofCOE.php" class="btn btn-sm btn-primary">Back</a>
@@ -114,7 +116,7 @@ include('../Header/Header.php');
                       <!-- /.user-block -->
                       <div class="row">
                         <!-- /.col -->
-                        <div class="col-sm-10">
+                        <div class="col-sm-12">
                             <div class="col-sm-12">
                               <h4 class="text-muted text">Document route:</h4>
                               <table class="table table-striped">
@@ -157,13 +159,7 @@ include('../Header/Header.php');
                           <!-- /.row -->
                         </div>
 
-                        <div class="col-sm-2">
-                            <div class="col-sm-12">
-                              <small class="text-muted text-center">Files Attached:</small>
 
-                            </div>
-                          <!-- /.row -->
-                        </div>
                         <!-- /.col -->
                       </div>
                       <!-- /.row -->
@@ -179,6 +175,45 @@ include('../Header/Header.php');
             <!-- /.card -->
           </div>
           <!-- /.col -->
+
+          <div class="col-md-3">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Files</h3>
+
+
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th class="text-xs">Action</th>
+                      <th class="text-xs">Files</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                    <?php if (is_array($Files) || is_object($Files))
+                          foreach($Files as $File){?>
+                      <td><?php echo $File['renamed'] ?></td>
+
+                    <td <?php if ($file['renamed'] != null){ ?> hidden <?php } ?> class=""><i>No file attached...</i></td>
+                    <td>&nbsp; &nbsp; <?php echo $file['renamed'] ?></td>
+
+                    <td class="text-center text-xs"><a class="btn-sm btn-info" href="../scannedfile/<?php echo $file['renamed']?>" target="_blank" <?php if ($file['renamed'] == null){ ?> hidden <?php } ?>><i class="fas fa-eye"></i></a>
+                    <a href="#" class="btn-sm btn-danger" data-toggle="modal" data-target="#delete_file<?php echo $file['id']?>" <?php if ($file['renamed'] == null){ ?> hidden <?php } ?>><i class="fas fa-trash"></i></a></td>
+                    <?php } ?>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+          </div>
+
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -187,6 +222,50 @@ include('../Header/Header.php');
 
 </div>
 <!-- ./wrapper -->
+
+
+<div class="modal fade" id="add_files">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Add Files</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form method = "post" enctype="multipart/form-data">
+            <div class="card-body">
+            <input type="hidden" class="form-control" name="id" value="<?php echo $Details['id']?>" placeholder="Enter ...">
+            <input type="hidden" class="form-control" name="tracking_no" value="<?php echo $Details['tracking_no']?>" placeholder="Enter ...">
+            <input type="hidden" class="form-control" name="subject[]" value="<?php echo $Details['subject'];?>">
+              <!-- <h1> Select the files you want to upload </h1>
+              <input type="file" name="files[]" multiple >
+
+              <button type="submit" name="upload">Upload files</button> -->
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                      <label>Files:</label>
+                      <div class="custom-file">
+                      <input type="file" class="custom-file-input" name="files[]" multiple="multiple">
+                      <label class="custom-file-label" >Choose file</label>
+                    </div>
+
+                      </div>
+                      </div>
+            </div>
+
+
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" name="upload" id="" class="btn btn-primary">Save files</button>
+            </div>
+          </div>
+          </form>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
 
   <?php include('../Footer/Footer.php'); ?>
 

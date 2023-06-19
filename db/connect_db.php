@@ -427,6 +427,92 @@ Class JOS {
     }
 
 
+    public function add_files()
+{
+    if(isset($_POST['upload']))
+    {
+
+      $id = $_POST["id"];
+      $tracking_no = $_POST["tracking_no"];
+      $title = $_POST["subject"];
+
+      $name_array = $_FILES['files']['name'];
+      $tmp_name_array = $_FILES['files']['tmp_name'];
+      // Number of files
+      $count_tmp_name_array = count($tmp_name_array);
+
+
+
+      $numbers = rand(0,100000);
+
+      $N = count($title);
+
+
+      for($i = 0; $i < $count_tmp_name_array; $i++){
+         // Get extension of current file
+         $extension = pathinfo($name_array[$i] , PATHINFO_EXTENSION);
+
+         for($j=0; $j < $N; $j++){
+          $rename=$title[$j].date('m-d-Y-').$numbers.".".$extension;
+
+        }
+
+          // We define the static final name for uploaded files (in the loop we will add an number to the end)
+          $static_final_name = $rename;
+
+
+         // Pay attention to $static_final_name
+         if(move_uploaded_file($tmp_name_array[$i], "../files/".$static_final_name.$i.".".$extension)){
+          $connection = $this->openConnection();
+          $stmt = $connection->prepare("INSERT INTO files(`document_id`, `tracking_no`, `renamed`, `original_name`) VALUES(?,?,?,?)");
+          $stmt->execute([$id, $tracking_no, $static_final_name, $name_array[$i]]);
+            echo header("Location:DocumentDetails?id=".$id);
+         } else {
+            echo "move_uploaded_file function failed for ".$name_array[$i]."<br>";
+         }
+
+        }
+    }
+
+     }
+
+
+    public function add_filesbackup()
+        {
+            if(isset($_POST['add_files']))
+            {
+
+            #retrieve file title
+            $id = $_POST["id"];
+            $title = $_POST["fullname"];
+
+            $date = date('m-d-Y H:i:s');
+
+            $oldname=$_FILES['file']['name'];
+            $extension = pathinfo($oldname,PATHINFO_EXTENSION);
+            $randomno=rand(0,100000);
+            $rename=$title.date('m-d-Y-').$randomno;
+
+            $newname=$rename.'.'.$extension;
+            $filename=$_FILES['file']['tmp_name'];
+
+            if(move_uploaded_file($filename, '../pictures/'.$newname))
+            {
+
+                    $connection = $this->openConnection();
+                    $stmt = $connection->prepare("INSERT INTO employee_pic(`employee_id`, `file_name`) VALUES(?,?)");
+                    $stmt->execute([$id, $newname]);
+
+                    echo header("Location:employees.php");
+            }
+            else
+                {
+                    echo "not uploaded";
+                }
+            }
+        }
+
+
     public function show_404(){
 
         http_response_code(404);
@@ -451,6 +537,22 @@ Class JOS {
         }
 
     }
+
+
+    public function get_files($id){
+
+      $connection = $this->openConnection();
+      $stmt = $connection->prepare("SELECT t1.id, t2.* FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN files t2 on t1.id = t2.document_id ORDER BY t2.date_added DESC");
+      $stmt->execute([$id]);
+      $file = $stmt->fetchall();
+      $total= $stmt->rowCount();
+      if($total > 0){
+          return $file;
+      }else{
+          return FALSE;
+      }
+
+      }
 
 
     public function getPositions()
