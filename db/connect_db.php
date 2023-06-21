@@ -346,11 +346,16 @@ Class JOS {
             $password = $_POST['password'];
             $access = $_POST['access'];
 
+            if($this->check_user_exist($username) == 0)
+            {
                 $connection = $this->openConnection();
                 $stmt = $connection->prepare("INSERT INTO setting_accounts(`user_id`, `username`, `password`, `access`) VALUES(?,?,?,?)");
                 $stmt->execute([$employee, $username, $password, $access]);
 
                 echo header ("Location: accounts");
+            }else{
+                echo header ("Location: accounts");
+            }
 
         }
     }
@@ -432,6 +437,7 @@ Class JOS {
     if(isset($_POST['upload']))
     {
 
+      $user_id = $_POST["user_id"];
       $id = $_POST["id"];
       $tracking_no = $_POST["tracking_no"];
       $title = $_POST["subject"];
@@ -441,15 +447,13 @@ Class JOS {
       // Number of files
       $count_tmp_name_array = count($tmp_name_array);
 
-
-
-      $numbers = rand(0,100000);
-
       $N = count($title);
 
 
       for($i = 0; $i < $count_tmp_name_array; $i++){
          // Get extension of current file
+
+         $numbers = rand(0,100000);
          $extension = pathinfo($name_array[$i] , PATHINFO_EXTENSION);
 
          for($j=0; $j < $N; $j++){
@@ -462,10 +466,10 @@ Class JOS {
 
 
          // Pay attention to $static_final_name
-         if(move_uploaded_file($tmp_name_array[$i], "../files/".$static_final_name.$i.".".$extension)){
+         if(move_uploaded_file($tmp_name_array[$i], "../files/document_files/".$static_final_name)){
           $connection = $this->openConnection();
-          $stmt = $connection->prepare("INSERT INTO files(`document_id`, `tracking_no`, `renamed`, `original_name`) VALUES(?,?,?,?)");
-          $stmt->execute([$id, $tracking_no, $static_final_name, $name_array[$i]]);
+          $stmt = $connection->prepare("INSERT INTO files(`document_id`, `tracking_no`, `renamed`, `original_name`, uploaded_by) VALUES(?,?,?,?,?)");
+          $stmt->execute([$id, $tracking_no, $static_final_name, $name_array[$i], $user_id]);
             echo header("Location:DocumentDetails?id=".$id);
          } else {
             echo "move_uploaded_file function failed for ".$name_array[$i]."<br>";
@@ -542,7 +546,7 @@ Class JOS {
     public function get_files($id){
 
       $connection = $this->openConnection();
-      $stmt = $connection->prepare("SELECT t1.id, t2.* FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN files t2 on t1.id = t2.document_id ORDER BY t2.date_added DESC");
+      $stmt = $connection->prepare("SELECT t1.id, t2.id as file_id, t2.* FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN files t2 on t1.id = t2.document_id ORDER BY t2.date_added DESC");
       $stmt->execute([$id]);
       $file = $stmt->fetchall();
       $total= $stmt->rowCount();
@@ -576,6 +580,23 @@ Class JOS {
     {
         $connection = $this->openConnection();
         $stmt = $connection->prepare("SELECT * FROM setting_divisions");
+        $stmt->execute();
+        $emp = $stmt->fetchAll();
+        $userCount = $stmt->rowCount();
+
+        if($userCount > 0){
+            return $emp;
+        }else{
+            return 0;
+        }
+
+    }
+
+
+    public function getAllDocument()
+    {
+        $connection = $this->openConnection();
+        $stmt = $connection->prepare("SELECT t1.*, s.division as division_owner, t3.division FROM documents t1 LEFT JOIN document_log t2 ON t1.id = t2.document_id LEFT JOIN setting_divisions t3 ON t1.route_to_division_id = t3.id LEFT JOIN setting_divisions s ON t1.division_id = s.id GROUP BY t1.id ORDER BY t1.id DESC");
         $stmt->execute();
         $emp = $stmt->fetchAll();
         $userCount = $stmt->rowCount();
@@ -745,9 +766,9 @@ Class JOS {
             $id = $_POST['id'];
 
                 $connection = $this->openConnection();
-                $connection->query("DELETE FROM `setting_users` WHERE `id` = '$id'");
+                $connection->query("DELETE FROM `users` WHERE `id` = '$id'");
 
-                echo header("Location: setting_users.php");
+                echo header("Location: employees");
 
 
         }
@@ -763,7 +784,7 @@ Class JOS {
                 $connection = $this->openConnection();
                 $connection->query("DELETE FROM `setting_accounts` WHERE `id` = '$id'");
 
-                echo header("Location: setting_accounts.php");
+                echo header("Location: accounts");
 
 
         }
@@ -808,22 +829,21 @@ Class JOS {
         if(isset($_POST['delete_file'])){
 
             $id = $_POST['id'];
+            $file_id = $_POST['file_id'];
             // $file_id = $_POST['file_id'];
-            $file_name = $_POST['file_name'];
+            $file_name = $_POST['filename'];
             // $ref_no = $_POST['ref_no'];
 
             $base_dir = realpath($_SERVER["DOCUMENT_ROOT"]);
-            $file_delete =  "$base_dir/HRDLog/pages/files/$file_name";
+            $file_delete =  "$base_dir/DTS/files/document_files/$file_name";
             // $path = realpath('../scannedfile/'.$file_name);
             // echo $path;
             if(unlink($file_delete)){
 
                 $connection = $this->openConnection();
-                $connection->query("DELETE FROM `files` WHERE `log_id` = '$id'");
-                // $connection->query("UPDATE ataf_list SET `file_upload` = 1  WHERE `id` = '$id'");
-                $connection->query("DELETE FROM `fileupload_log` WHERE `log_id` = '$id'");
+                $connection->query("DELETE FROM `files` WHERE `id` = '$file_id'");
 
-                echo header("Location:Details.php?id=".$id);
+                echo header("Location:DocumentDetails?id=".$id);
             }else{
                 echo "not delete";
             }
