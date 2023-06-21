@@ -50,11 +50,11 @@ include('../Header/Header.php');
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
-            <div class="card-header">
+            <!-- <div class="card-header">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_coe">
               <i class="fas fa-user-plus"></i>
               </button>
-            </div>
+            </div> -->
               <div class="card-body">
               <table id="datatable" class="table table-bordered table-striped">
                   <thead class="text-nowrap">

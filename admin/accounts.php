@@ -58,7 +58,7 @@ include('../Header/Header.php');
             <div class="card">
             <div class="card-header">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_account">
-              <i class="fas fa-user-plus"></i>
+              <i class="fas fa-user-plus"></i> Add Accounts
               </button>
             </div>
               <div class="card-body">

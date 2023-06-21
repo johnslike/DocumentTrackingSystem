@@ -21,7 +21,7 @@ include('../Header/Header.php');
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <div class="container-fluid">
+      <div class="container">
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1>List of Employees</h1>
@@ -48,7 +48,7 @@ include('../Header/Header.php');
 
     <!-- Main content -->
     <section class="content">
-      <div class="container-fluid">
+      <div class="container">
         <div class="row">
           <div class="col-12">
             <div class="card">
@@ -56,7 +56,7 @@ include('../Header/Header.php');
 
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_employee">
-                    <i class="fas fa-user-plus"></i> Add</button>
+                    <i class="fas fa-user-plus"></i> Add Employee</button>
 
               </div>
 

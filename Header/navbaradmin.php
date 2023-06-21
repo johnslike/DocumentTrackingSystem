@@ -27,7 +27,7 @@ require_once('../db/connect_db.php');
                 <a href="home" class="nav-link">Home</a>
               </li>
               <li class="nav-item">
-              <a href="documents" class="nav-link">All Documents</a>
+              <a href="documents" class="nav-link">Documents</a>
               </li>
               <li class="nav-item">
               <a href="employees" class="nav-link">Employees</a>

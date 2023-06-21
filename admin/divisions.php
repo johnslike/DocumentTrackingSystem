@@ -48,7 +48,7 @@ include('../Header/Header.php');
 
 
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_division">
-                    <i class="fas fa-plus"></i></button>
+                    <i class="fas fa-plus"></i> Add Division</button>
               </div>
 
               <!-- ./card-header -->

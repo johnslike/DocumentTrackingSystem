@@ -47,7 +47,7 @@ include('../Header/Header.php');
 
 
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_position">
-                    <i class="fas fa-plus"></i></button>
+                    <i class="fas fa-plus"></i> Add Position</button>
               </div>
 
               <!-- ./card-header -->
