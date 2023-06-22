@@ -85,9 +85,9 @@ include('../Header/Header.php');
                     }
                     echo $birth_date ; ?></h5></b>
 
+                <button type="button" class="btn btn-success btn-sm btn-block" data-toggle="modal" data-target="#add_files" <?php if($Details['id'] == NULL){ ?> hidden <?php }?>><b>Upload Files</b></button>
 
-
-                <!-- <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#add_files" <?php if($Details['id'] == NULL){ ?> hidden <?php }?>><b>Upload Files</b></button> -->
+                <a href="documentlist" class="btn btn-primary btn-block"><b>Back to Employees List</b></a>
 
               </div>
               <!-- /.card-body -->

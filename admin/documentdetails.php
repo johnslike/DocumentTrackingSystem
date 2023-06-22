@@ -106,7 +106,7 @@ include('../Header/Header.php');
                                     foreach($Files as $File){?>
                 <a class="btn btn-xs btn-info" href="../files/document_files/<?php echo $File['renamed']?>" <?php if ($File['renamed'] == null){ ?> hidden <?php } ?>  target="_blank"><i class="fas fa-eye"></i> View</a>
 
-                <a href="#" class="btn-xs btn-danger float-right" data-toggle="modal" data-target="#delete_file<?php echo $File['file_id']?>" <?php if ($File['renamed'] == null){ ?> hidden <?php } ?>><i class="fas fa-trash"></i> Delete</a>
+                <!-- <a href="#" class="btn-xs btn-danger float-right" data-toggle="modal" data-target="#delete_file<?php echo $File['file_id']?>" <?php if ($File['renamed'] == null){ ?> hidden <?php } ?>><i class="fas fa-trash"></i> Delete</a> -->
                 <br>
 
                 <p class="text-muted">

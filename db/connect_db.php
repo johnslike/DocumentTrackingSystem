@@ -132,6 +132,18 @@ Class JOS {
     }
 
 
+    public function check_emp_id_exist($emp_id){
+
+
+      $connection = $this->openConnection();
+      $stmt = $connection->prepare("SELECT * FROM setting_users WHERE employee_id = ?");
+      $stmt->execute([$emp_id]);
+      $total = $stmt->rowCount();
+
+      return $total;
+}
+
+
     public function check_position_exist($position){
 
 
@@ -184,6 +196,43 @@ Class JOS {
                     return FALSE;
                 }
 
+                }
+
+
+                public function add_employee()
+                {
+                    if(isset($_POST['add_employee']))
+                    {
+                        $emp_id = $_POST['emp_id'];
+                        $fname = $_POST['fname'];
+                        $mnitial = $_POST['mnitial'];
+                        $lname = $_POST['lname'];
+                        $suffix = $_POST['suffix'];
+                        $position = $_POST['position'];
+                        $division = $_POST['division'];
+                        $contact_no = $_POST['contact_no'];
+                        $email_add = $_POST['email_add'];
+                        $address = $_POST['address'];
+                        $gender = $_POST['gender'];
+                        $civil_status = $_POST['civil_status'];
+                        $bday = $_POST['bday'];
+
+                        if($this->check_emp_id_exist($emp_id) == 0)
+                        {
+
+                            $connection = $this->openConnection();
+                            $stmt = $connection->prepare("INSERT INTO setting_users(`employee_id`, `fname`, minitial, `lname`, suffix, division_id, position_id, birth_date, `address`, `gender`, `civil_status`, `contact_no`, email_add) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                            $stmt->execute([$emp_id,$fname,$mnitial,$lname,$suffix,$division,$position,$bday,$address,$gender,$civil_status,$contact_no,$email_add]);
+
+                            echo header ("Location: employees");
+
+                        }else{
+
+                            echo header ("Location: employees");
+                      }
+
+
+                    }
                 }
 
 
@@ -481,40 +530,39 @@ Class JOS {
      }
 
 
-    public function add_filesbackup()
-        {
-            if(isset($_POST['add_files']))
-            {
+     public function add_photo()
+     {
+         if(isset($_POST['add_photo']))
+         {
 
-            #retrieve file title
-            $id = $_POST["id"];
-            $title = $_POST["fullname"];
+         #retrieve file title
+         $id = $_POST["id"];
+         $title = $_POST["fullname"];
 
-            $date = date('m-d-Y H:i:s');
+         $date = date('m-d-Y H:i:s');
 
-            $oldname=$_FILES['file']['name'];
-            $extension = pathinfo($oldname,PATHINFO_EXTENSION);
-            $randomno=rand(0,100000);
-            $rename=$title.date('m-d-Y-').$randomno;
+         $oldname=$_FILES['file']['name'];
+         $extension = pathinfo($oldname,PATHINFO_EXTENSION);
+         $randomno=rand(0,100000);
+         $rename=$title.date('m-d-Y-').$randomno;
 
-            $newname=$rename.'.'.$extension;
-            $filename=$_FILES['file']['tmp_name'];
+         $newname=$rename.'.'.$extension;
+         $filename=$_FILES['file']['tmp_name'];
 
-            if(move_uploaded_file($filename, '../pictures/'.$newname))
-            {
+         if(move_uploaded_file($filename, '../files/profile_pic/'.$newname))
+         {
 
-                    $connection = $this->openConnection();
-                    $stmt = $connection->prepare("INSERT INTO employee_pic(`employee_id`, `file_name`) VALUES(?,?)");
-                    $stmt->execute([$id, $newname]);
+                 $connection = $this->openConnection();
+                 $connection->query("UPDATE `setting_users` SET `picture` = '$newname' WHERE `id` = '$id'");
 
-                    echo header("Location:employees.php");
-            }
-            else
-                {
-                    echo "not uploaded";
-                }
-            }
-        }
+                 echo header("Location:profile?id=".$id);
+         }
+         else
+             {
+                 echo "not uploaded";
+             }
+         }
+     }
 
 
     public function show_404(){
@@ -529,7 +577,7 @@ Class JOS {
     public function getUsers()
     {
         $connection = $this->openConnection();
-        $stmt = $connection->prepare("SELECT t1.id, t1.fname, t1.minitial, t1.lname, t1.suffix, t1.date_added, t2.position, t2.id as pos_id, t3.division, t3.id as div_id FROM setting_users t1 LEFT JOIN setting_positions t2 ON t1.position_id = t2.id LEFT JOIN setting_divisions t3 ON t1.division_id = t3.id ORDER BY t1.date_added DESC");
+        $stmt = $connection->prepare("SELECT t1.id, t1.employee_id, t1.fname, t1.minitial, t1.lname, t1.suffix, t1.date_added, t2.position, t2.id as pos_id, t3.division, t3.id as div_id FROM setting_users t1 LEFT JOIN setting_positions t2 ON t1.position_id = t2.id LEFT JOIN setting_divisions t3 ON t1.division_id = t3.id ORDER BY t1.date_added DESC");
         $stmt->execute();
         $emp = $stmt->fetchAll();
         $userCount = $stmt->rowCount();
@@ -614,6 +662,22 @@ Class JOS {
 
       $connection = $this->openConnection();
       $stmt = $connection->prepare("SELECT t1.* FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN document_log t2 ON t1.id = t2.document_id ORDER BY t1.date_added DESC");
+      $stmt->execute([$id]);
+      $Details = $stmt->fetch();
+      $total= $stmt->rowCount();
+
+      if($total > 0){
+          return $Details;
+      }else{
+          return FALSE;
+      }
+    }
+
+
+    public function getProfile($id){
+
+      $connection = $this->openConnection();
+      $stmt = $connection->prepare("SELECT t1.*, t2.division, t3.position FROM (SELECT * from setting_users WHERE id = ?) t1 LEFT JOIN setting_divisions t2 ON t1.division_id = t2.id LEFT JOIN setting_positions t3 ON t1.position_id = t3.id");
       $stmt->execute([$id]);
       $Details = $stmt->fetch();
       $total= $stmt->rowCount();
@@ -821,6 +885,32 @@ Class JOS {
 
         }
     }
+
+
+    public function delete_photo(){
+
+
+      if(isset($_POST['delete_photo'])){
+
+          $id = $_POST['id'];
+          // $file_id = $_POST['file_id'];
+          $file_name = $_POST['file_name'];
+
+          $base_dir = realpath($_SERVER["DOCUMENT_ROOT"]);
+          $file_delete =  "$base_dir/DTS/files/profile_pic/$file_name";
+          if(unlink($file_delete)){
+
+              $connection = $this->openConnection();
+              $connection->query("UPDATE `setting_users` SET `picture` = NULL WHERE `id` = '$id'");
+
+              echo header("Location:profile?id=".$id);
+          }else{
+              echo "not delete";
+          }
+
+      }
+
+  }
 
 
     public function delete_file(){

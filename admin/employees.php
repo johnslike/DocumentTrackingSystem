@@ -4,6 +4,7 @@ require_once('../db/connect_db.php');
 $Employees=$store->getUsers();
 $store->add_user($_POST);
 $store->update_user($_POST);
+$store->add_employee($_POST);
 // $store->delete_user($_POST);
 
 include('adminaccess.php');
@@ -39,7 +40,7 @@ include('../Header/Header.php');
 
     <?php
 
-                $con = mysqli_connect('localhost','root','123456','cscbiometric');
+                $con = mysqli_connect('localhost','root','123456','dts_database');
 
                 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
@@ -66,7 +67,7 @@ include('../Header/Header.php');
                   <thead class="text-nowrap">
                     <tr>
                       <th>Action</th>
-                      <!-- <th>Employee ID</th> -->
+                      <th>Employee ID</th>
                       <th>Fullname</th>
                       <th>Division</th>
                       <th>Position</th>
@@ -77,199 +78,13 @@ include('../Header/Header.php');
 
                     <?php if (is_array($Employees) || is_object($Employees))
                       foreach($Employees as $Employee){?>
-                      <td style="width: 10px"><button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#edit<?php echo $Employee['id']?>"><i class="fas fa-pencil-alt"></i></button>
-                  <!-- <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete<?php echo $Employee['id']?>"><i class="fas fa-trash-alt"></i></button> -->
-                </td>
-
+                      <td><a type="button" class="btn btn-info btn-sm" href="profile?id=<?php echo $Employee['id']?>"><i class="fas fa-eye"></i></a>
+                    </td>
+                      <td><?php echo $Employee['employee_id'];?></td>
                       <td><?php echo $Employee['fname']." ".$Employee['minitial']." ".$Employee['lname']." ".$Employee['suffix'];?></td>
                       <td><?php echo $Employee['division'];?></td>
                       <td><?php echo $Employee['position'];?></td>
                       </tr>
-
-      <div class="modal fade" id="edit<?php echo $Employee['id']?>">
-          <div class="modal-dialog modal-lg">
-
-          <div class="modal-content">
-
-            <div class="modal-header">
-              <h4 class="modal-title">Edit info</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form method = "post" action="">
-            <div class="card-body">
-                    <div class="row">
-                    <input type="hidden" class="form-control" value="<?php echo $Employee['id'];?>" name="id" >
-                    <div class="col-sm-6">
-                      <!-- text input -->
-                      <div class="form-group">
-                      <span style="color:red">* </span><label>Employee ID:</label>
-                        <input type="text" class="form-control ictno_id" value="<?php echo $Employee['employee_id'];?>" name="emp_id" placeholder="Enter ...">
-                        <small class="error_ictno" style="color: red;"></small>
-                      </div>
-                    </div>
-
-                      </div>
-
-                      <div class="row">
-                      <div class="col-sm-4">
-                      <div class="form-group">
-                      <span style="color:red">* </span><label>First Name:</label>
-                        <input type="text" class="form-control" value="<?php echo $Employee['fname'];?>" name="fname" placeholder="Enter ...">
-                      </div>
-                    </div>
-
-                      <div class="col-sm-2">
-                      <div class="form-group">
-                      <span style="color:red">* </span><label>Middle Initial:</label>
-                        <input type="text" class="form-control" value="<?php echo $Employee['minitial'];?>" name="mnitial" placeholder="Enter ...">
-                      </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                      <span style="color:red">* </span><label>Last Name:</label>
-                        <input type="text" class="form-control" value="<?php echo $Employee['lname'];?>" name="lname" placeholder="Enter ...">
-                      </div>
-                    </div>
-
-                      <div class="col-sm-2">
-                      <div class="form-group">
-                      </span><label>Suffix:</label>
-                        <input type="text" class="form-control" value="<?php echo $Employee['suffix'];?>" name="suffix" placeholder="Enter ...">
-                      </div>
-                    </div>
-                    </div>
-
-                    <div class="row">
-
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                      <label>Contact No.:</label>
-                        <input type="number" class="form-control" value="<?php echo $Employee['contact_no'];?>" name="contact_no" placeholder="Enter ...">
-                      </div>
-                    </div>
-
-
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                      <span style="color:red">* </span><label>Division:</label>
-                        <select class="form-control" name="division" id="access">
-                        <option value="">--Select Division--</option>
-
-                        <?php $query2 = "SELECT * FROM setting_divisions";
-                              $rows = mysqli_query($con,$query2);
-
-                            foreach ($rows as $row)
-                            {
-                              ?>
-                              <option value="<?php echo $row['id']; ?>"<?php if($Employee['div_id'] == $row['id']) echo 'selected="selected"'; ?>><?php echo $row['division']; ?></option>
-                              <?php
-                            }
-
-                              ?>
-
-                        </select>
-                      </div>
-                      </div>
-
-
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                      <span style="color:red">* </span><label>Position:</label>
-                        <select class="form-control" name="position" id="access">
-                        <option value="">--Select Position--</option>
-
-                        <?php $query2 = "SELECT * FROM setting_positions";
-                              $rows = mysqli_query($con,$query2);
-
-                            foreach ($rows as $row)
-                            {
-                              ?>
-                              <option value="<?php echo $row['id']; ?>"<?php if($Employee['pos_id'] == $row['id']) echo 'selected="selected"'; ?>><?php echo $row['position']; ?></option>
-                              <?php
-                            }
-
-                              ?>
-
-                        </select>
-                      </div>
-                      </div>
-
-                  </div>
-
-                  <div class="row">
-
-                  <div class="col-sm-4">
-                      <div class="form-group">
-                        <label>Gender:</label>
-                        <select name="gender" class="form-control" id="">
-                        <option value = "" ><i>--Select Gender--</i></option>
-                        <option value = "Male" <?php if($Employee['gender'] == "Male"){echo "selected";}?>>Male</option>
-                        <option value = "Female" <?php if($Employee['gender'] == "Female"){echo "selected";}?>>Female</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                      <label>Age:</label>
-                        <input type="number" class="form-control" value="<?php echo $Employee['age'];?>" name="age">
-                      </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                      <label>Birth date:</label>
-                        <input type="date" class="form-control" value="<?php echo $Employee['bday'];?>" name="bday" placeholder="Enter ...">
-                      </div>
-                    </div>
-
-
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                      <span style="color:red">* </span><label>Direct Supervisor:</label>
-                        <select class="form-control" name="supervisor" id="access">
-                        <option value="">--Select Employee--</option>
-
-                        <?php $query2 = "SELECT * FROM employees WHERE id != '$Employee[id]' AND position_id in (1,2,9,6,7,13)";
-                              $rows = mysqli_query($con,$query2);
-
-                            foreach ($rows as $row)
-                            {
-                              ?>
-                              <option value="<?php echo $row['id']; ?>"<?php if($Employee['sid'] == $row['id']) echo 'selected="selected"'; ?>><?php echo $row['fname']." ".$row['minitial']." ".$row['lname']." ".$row['suffix']; ?></option>
-                              <?php
-                            }
-
-                              ?>
-
-                        </select>
-                      </div>
-                      </div>
-
-                  </div>
-
-            </div>
-
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button name="update" class="btn btn-success"><i class="fas fa-check"></i> Update data</button>
-            </div>
-
-          </div>
-
-          </form>
-
-
-
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>
-      <!-- /.modal -->
-
 
                   <?php } ?>
                   </tbody>
@@ -306,17 +121,6 @@ include('../Header/Header.php');
             </div>
             <form method = "post">
             <div class="card-body">
-                    <div class="row">
-                    <div class="col-sm-6">
-                      <!-- text input -->
-                      <div class="form-group">
-                      <span style="color:red">* </span><label>Employee ID:</label>
-                        <input type="text" class="form-control ictno_id" name="emp_id" placeholder="Enter ..." required>
-                        <small class="error_ictno" style="color: red;"></small>
-                      </div>
-                    </div>
-
-                      </div>
 
                       <div class="row">
                       <div class="col-sm-4">
@@ -348,12 +152,14 @@ include('../Header/Header.php');
                     </div>
                     </div>
 
-                    <div class="row">
 
+                  <div class="row">
                     <div class="col-sm-4">
+                      <!-- text input -->
                       <div class="form-group">
-                      <label>Contact No.:</label>
-                        <input type="number" class="form-control" id="" name="contact_no" placeholder="Enter ...">
+                      <span style="color:red">* </span><label>Employee ID:</label>
+                        <input type="text" class="form-control ictno_id" name="emp_id" placeholder="Enter ..." required>
+                        <small class="error_ictno" style="color: red;"></small>
                       </div>
                     </div>
 
@@ -415,11 +221,37 @@ include('../Header/Header.php');
                       </div>
                     </div>
 
+                      </div>
+
+                    <div class="row">
+
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                      <label>Contact No.:</label>
+                        <input type="number" class="form-control" id="" name="contact_no" placeholder="Enter ...">
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                      <label>Email Address:</label>
+                        <input type="text" class="form-control" id="" name="email_add" placeholder="Enter ...">
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                      <label>Permanent Address:</label>
+                        <input type="text" class="form-control" id="" name="address" placeholder="Enter ...">
+                      </div>
+                    </div>
+
                   </div>
+
 
                   <div class="row">
 
-                  <div class="col-sm-4">
+                  <div class="col-sm-3">
                       <div class="form-group">
                         <label>Gender:</label>
                         <select class="form-control" name="gender" id="access">
@@ -430,37 +262,31 @@ include('../Header/Header.php');
                       </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label>Civil Status:</label>
+                        <select class="form-control" name="civil_status" id="access">
+                          <option value="">--Select Gender--</option>
+                          <option value="Single">Single</option>
+                          <option value="Married">Married</option>
+                          <option value="Divorced">Divorced</option>
+                          <option value="Separated">Separated</option>
+                          <option value="Widowed">Widowed</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
                       <div class="form-group">
                       <label>Age:</label>
                         <input type="number" class="form-control" id="password" name="age" placeholder="Enter ...">
                       </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                       <div class="form-group">
                       <label>Birth date:</label>
                         <input type="date" class="form-control" id="password" name="bday" placeholder="Enter ...">
-                      </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                      <label>Direct Supervisor:</label>
-                      <select class="form-control" name="supervisor" id="access">
-                        <option value="">--Select Employee--</option>
-                        <?php $query2 = "SELECT * FROM employees WHERE position_id = '1' OR position_id = '2' OR position_id = '9' OR position_id = '6' OR position_id = '7' OR position_id = '13'";
-                              $rows = mysqli_query($con,$query2);
-
-                        foreach ($rows as $row)
-                        {
-                        ?>
-                        <option value="<?php echo $row['id']; ?>"><?php echo $row['fname']." ".$row['minitial']." ".$row['lname']." ".$row['suffix']; ?></option>
-                        <?php
-                        }
-
-                        ?>
-                        </select>
                       </div>
                     </div>
                   </div>
@@ -469,7 +295,7 @@ include('../Header/Header.php');
 
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" name="add_employee" id="" class="btn btn-primary">Save data</button>
+              <button type="submit" name="add_employee" id="" class="btn btn-primary">Add Employee</button>
             </div>
           </div>
           </form>
