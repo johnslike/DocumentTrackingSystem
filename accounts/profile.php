@@ -3,7 +3,6 @@
 require_once('../db/connect_db.php');
 $id = $_GET['id'];
 $Profile = $store->getProfile($id);
-$EmployeeFiles = $store->getEmployeeFile($id);
 $store->add_photo($_POST);
 $store->delete_photo($_POST);
 $store->update_user($_POST);
@@ -11,7 +10,7 @@ $store->employee_file($_POST);
 
 $date = date('Y-m-d');
 
-include('adminaccess.php');
+include('useraccess.php');
 include('../Header/Header.php');
 
 ?>
@@ -21,7 +20,7 @@ include('../Header/Header.php');
 <div class="wrapper">
 
   <!-- Navbar -->
-  <?php include('../Header/navbaradmin.php'); ?>
+  <?php include('../Header/navbar.php'); ?>
   <!-- /.navbar -->
 
   <!-- Content Wrapper. Contains page content -->
@@ -167,28 +166,31 @@ include('../Header/Header.php');
                       </div>
                       <!-- /.row -->
                       <div class="col-sm-6">
-                        <br>
                               <p class="text-muted text">Uploaded Files:</p>
                               <table class="table table-striped">
                                       <thead>
                                       <tr>
                                         <th class="text-sm">Action</th>
-                                        <th class="text-sm">File Name</th>
-                                        <th class="text-sm">Date Uploaded</th>
+                                        <th class="text-sm">Division</th>
+                                        <th class="text-sm">Acted by</th>
+                                        <th class="text-sm">Remarks</th>
+                                        <th class="text-sm">Date Acted</th>
                                       </tr>
                                       </thead>
                                       <tbody>
                                       <tr>
-                                      <?php if (is_array($EmployeeFiles) || is_object($EmployeeFiles))
-                                        foreach($EmployeeFiles as $EmployeeFile){?>
+                                      <?php if (is_array($Track) || is_object($Track))
+                                        foreach($Track as $Tracks){?>
 
-                                        <td class="text-sm"><a class="btn btn-xs btn-info" href="../files/employee_files/<?php echo $EmployeeFile['rename_file']?>" <?php if ($EmployeeFile['rename_file'] == null){ ?> hidden <?php } ?>  target="_blank"><i class="fas fa-eye"></i> View</a></td>
-                                        <td class="text-sm"><?php echo $EmployeeFile['file_name'] ?></td>
+                                        <td style="width: 120px"><i><span class="text-sm"><?php if($Tracks['status'] == 2){ echo "<h7 class='text text-primary'>Forwarded to</h7>";}elseif($Tracks['status'] == 3){echo "<h7 class='text text-success'>Received by</h7>";}elseif($Tracks['status'] == 4){echo "<h9 class='text text-bold text-warning'>End Cycle by</h9>";}elseif($Tracks['status'] == 5){echo "<h7 class='text text-danger'>Returned to</h7>";}?></span></i></td>
+                                        <td class="text-sm"><?php echo $Tracks['division'] ?></td>
+                                        <td class="text-sm"><?php echo $Tracks['fname']." ".$Tracks['minitial']." ".$Tracks['lname']." ".$Tracks['suffix'] ?></td>
+                                        <td class="text-sm"><?php echo $Tracks['remarks'] ?></td>
                                         <td class="text-xs"><?php
 
-                                            if(isset($EmployeeFile['date_added']) && $EmployeeFile['date_added'] !="")
+                                            if(isset($Tracks['date_acted']) && $Tracks['date_acted'] !="")
                                             {
-                                                $date = date("F j, Y | h:sa", strtotime($EmployeeFile['date_added']));
+                                                $date = date("F j, Y | h:sa", strtotime($Tracks['date_acted']));
                                             }
                                             else {
                                                 $date = "";
@@ -201,8 +203,8 @@ include('../Header/Header.php');
                                       </tbody>
                                     </table>
 
-                      <!-- /.col -->
-                    </div>
+          <!-- /.col -->
+        </div>
                   </div>
                 </div>
                 <!-- /.tab-content -->
@@ -284,6 +286,7 @@ include('../Header/Header.php');
             <!-- /.modal-dialog -->
           </div>
       <!-- /.modal -->
+
 
 
           <div class="modal fade" id="add_photo<?php echo $Profile['id']?>">

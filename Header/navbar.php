@@ -2,14 +2,14 @@
 
 require_once('../db/connect_db.php');
 
-
+$activePage = basename($_SERVER['PHP_SELF'], ".php");
 ?>
 
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container">
-      <a href="setting_accounts.php" class="navbar-brand">
-        <img src="../dist/img/LOGO.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <a href="profile?id=<?php echo $userdetails['id'] ?>" class="navbar-brand">
+        <img src="../files/profile_pic/<?php echo $userdetails['picture'] ?>" class="brand-image img-circle elevation-1" style="opacity: .8">
         <span class="brand-text font-weight-light"><?php echo $userdetails['fname']." ".$userdetails['minitial']." ".$userdetails['lname']." ".$userdetails['suffix'] ?></span>
       </a>
 
@@ -24,10 +24,10 @@ require_once('../db/connect_db.php');
             <a href="index3.html" class="nav-link">Home</a>
           </li> -->
               <li class="nav-item">
-                <a href="documents" class="nav-link">Home</a>
+                <a href="documents" class="nav-link <?= ($activePage == 'documents') ? 'text-bold text-primary active':''; ?>">Home</a>
               </li>
               <li class="nav-item">
-              <a href="DocumentList" class="nav-link">List of Documents</a>
+              <a href="documentlist" class="nav-link <?= ($activePage == 'documentlist') ? 'text-bold text-primary active':''; ?>">List of Documents</a>
               </li>
         </ul>
 

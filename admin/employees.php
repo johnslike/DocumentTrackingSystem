@@ -3,9 +3,7 @@ require_once('../db/connect_db.php');
 
 $Employees=$store->getUsers();
 $store->add_user($_POST);
-$store->update_user($_POST);
 $store->add_employee($_POST);
-// $store->delete_user($_POST);
 
 include('adminaccess.php');
 include('../Header/Header.php');
@@ -251,7 +249,7 @@ include('../Header/Header.php');
 
                   <div class="row">
 
-                  <div class="col-sm-3">
+                  <div class="col-sm-4">
                       <div class="form-group">
                         <label>Gender:</label>
                         <select class="form-control" name="gender" id="access">
@@ -262,7 +260,7 @@ include('../Header/Header.php');
                       </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                       <div class="form-group">
                         <label>Civil Status:</label>
                         <select class="form-control" name="civil_status" id="access">
@@ -276,14 +274,7 @@ include('../Header/Header.php');
                       </div>
                     </div>
 
-                    <div class="col-sm-3">
-                      <div class="form-group">
-                      <label>Age:</label>
-                        <input type="number" class="form-control" id="password" name="age" placeholder="Enter ...">
-                      </div>
-                    </div>
-
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                       <div class="form-group">
                       <label>Birth date:</label>
                         <input type="date" class="form-control" id="password" name="bday" placeholder="Enter ...">

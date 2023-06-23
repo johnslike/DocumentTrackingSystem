@@ -60,7 +60,7 @@ Class JOS {
             $password = $_POST['password'];
 
                 $connection = $this->openConnection();
-                $stmt = $connection->prepare("SELECT t1.username, t1.password, t1.access, t2.id, t2.fname, t2.minitial, t2.lname, t2.suffix, t2.division_id FROM setting_accounts t1 LEFT JOIN setting_users t2 ON t1.user_id = t2.id WHERE username = ? AND `password` = ?");
+                $stmt = $connection->prepare("SELECT t1.username, t1.password, t1.access, t2.id, t2.fname, t2.minitial, t2.lname, t2.suffix, t2.division_id, t2.picture FROM setting_accounts t1 LEFT JOIN setting_users t2 ON t1.user_id = t2.id WHERE username = ? AND `password` = ?");
                 $stmt->execute([$username, $password]);
                 $user = $stmt->fetch();
                 $total = $stmt->rowCount();
@@ -96,7 +96,8 @@ Class JOS {
             "suffix" => $array['suffix'],
             "access" => $array['access'],
             "id" => $array['id'],
-            "division_id" => $array['division_id']
+            "division_id" => $array['division_id'],
+            "picture" => $array['picture']
 
         );
 
@@ -565,6 +566,43 @@ Class JOS {
      }
 
 
+     public function employee_file()
+     {
+         if(isset($_POST['employee_file']))
+         {
+
+         #retrieve file title
+         $id = $_POST["id"];
+         $file_name = $_POST["file_name"];
+         $title = $_POST["fullname"];
+
+         $date = date('m-d-Y H:i:s');
+
+         $oldname=$_FILES['file']['name'];
+         $extension = pathinfo($oldname,PATHINFO_EXTENSION);
+         $randomno=rand(0,100000);
+         $rename=$title.date('m-d-Y-').$randomno;
+
+         $newname=$rename.'.'.$extension;
+         $filename=$_FILES['file']['tmp_name'];
+
+         if(move_uploaded_file($filename, '../files/employee_files/'.$newname))
+         {
+
+                 $connection = $this->openConnection();
+                 $stmt = $connection->prepare("INSERT INTO employee_files(`employee_id`, `file_name`, `rename_file`) VALUES(?,?,?)");
+                 $stmt->execute([$id, $file_name, $newname]);
+
+                 echo header("Location:profile?id=".$id);
+         }
+         else
+             {
+                 echo "not uploaded";
+             }
+         }
+     }
+
+
     public function show_404(){
 
         http_response_code(404);
@@ -595,6 +633,22 @@ Class JOS {
 
       $connection = $this->openConnection();
       $stmt = $connection->prepare("SELECT t1.id, t2.id as file_id, t2.* FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN files t2 on t1.id = t2.document_id ORDER BY t2.date_added DESC");
+      $stmt->execute([$id]);
+      $file = $stmt->fetchall();
+      $total= $stmt->rowCount();
+      if($total > 0){
+          return $file;
+      }else{
+          return FALSE;
+      }
+
+      }
+
+
+    public function getEmployeeFile($id){
+
+      $connection = $this->openConnection();
+      $stmt = $connection->prepare("SELECT t1.id, t2.* FROM (SELECT * FROM setting_users WHERE id = ?) t1 LEFT JOIN employee_files t2 on t1.id = t2.employee_id ORDER BY t2.date_added DESC");
       $stmt->execute([$id]);
       $file = $stmt->fetchall();
       $total= $stmt->rowCount();
@@ -727,45 +781,30 @@ Class JOS {
     }
 
 
-    public function update_request(){
-
-
-        if(isset($_POST['update_request'])){
-
-            $id = $_POST['id'];
-            $request_by = $_POST['request_by'];
-            $date_requested = $_POST['date_requested'];
-            $problem_request = $_POST['problem_request'];
-            $date_acted = $_POST['date_acted'];
-            $action_taken = $_POST['action_taken'];
-
-                $connection = $this->openConnection();
-                $connection->query("UPDATE `request_problem` SET `user_id` = '$request_by', `action_taken` = '$action_taken', `request` = '$problem_request', `date_requested` = '$date_requested', `date_acted` = '$date_acted', `date_updated` = now() WHERE `id` = '$id'");
-
-                echo header("Location:requests_all.php");
-
-        }
-
-    }
-
-
     public function update_user(){
 
 
-        if(isset($_POST['update'])){
+        if(isset($_POST['edit_employee'])){
 
             $id = $_POST['id'];
+            $emp_id = $_POST['emp_id'];
             $fname = $_POST['fname'];
-            $mintial = $_POST['mintial'];
+            $mnitial = $_POST['mnitial'];
             $lname = $_POST['lname'];
             $suffix = $_POST['suffix'];
-            $division = $_POST['division'];
             $position = $_POST['position'];
+            $division = $_POST['division'];
+            $contact_no = $_POST['contact_no'];
+            $email_add = $_POST['email_add'];
+            $address = $_POST['address'];
+            $gender = $_POST['gender'];
+            $civil_status = $_POST['civil_status'];
+            $bday = $_POST['bday'];
 
                 $connection = $this->openConnection();
-                $connection->query("UPDATE `setting_users` SET `fname` = '$fname', `minitial` = '$mintial', `lname` = '$lname', `suffix` = '$suffix', `division_id` = '$division', `position_id` = '$position', `date_updated` = now() WHERE `id` = '$id'");
+                $connection->query("UPDATE `setting_users` SET `employee_id` = '$emp_id', `fname` = '$fname', `minitial` = '$mnitial', `lname` = '$lname', `suffix` = '$suffix', `division_id` = '$division', `position_id` = '$position', `birth_date` = '$bday', `address` = '$address', `gender` = '$gender', `civil_status` = '$civil_status', `contact_no` = '$contact_no', `email_add` = '$email_add', `date_updated` = now() WHERE `id` = '$id'");
 
-                echo header("Location:setting_users.php");
+                echo header("Location:profile?id=".$id);
 
         }
 

@@ -2,7 +2,7 @@
 
 require_once('../db/connect_db.php');
 
-
+$activePage = basename($_SERVER['PHP_SELF'], ".php");
 ?>
 
 <!-- Navbar -->
@@ -17,29 +17,31 @@ require_once('../db/connect_db.php');
         <span class="navbar-toggler-icon"></span>
       </button>
 
+
       <div class="collapse navbar-collapse order-3" id="navbarCollapse">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
           <!-- <li class="nav-item">
             <a href="index3.html" class="nav-link">Home</a>
           </li> -->
-              <li class="nav-item">
-                <a href="home" class="nav-link">Home</a>
+              <li class="nav-item" >
+              <a href="home" class="nav-link <?= ($activePage == 'home') ? 'text-bold text-primary active':''; ?>">Home</a>
+
               </li>
               <li class="nav-item">
-              <a href="documents" class="nav-link">Documents</a>
+              <a href="documents" class="nav-link <?= ($activePage == 'documents') ? 'text-bold text-primary active':''; ?>">Documents</a>
               </li>
               <li class="nav-item">
-              <a href="employees" class="nav-link">Employees</a>
+              <a href="employees" class="nav-link <?= ($activePage == 'employees') ? 'text-bold text-primary active':''; ?>">Employees</a>
               </li>
               <li class="nav-item">
-              <a href="positions" class="nav-link">Positions</a>
+              <a href="positions" class="nav-link <?= ($activePage == 'positions') ? 'text-bold text-primary active':''; ?>">Positions</a>
               </li>
               <li class="nav-item">
-              <a href="divisions" class="nav-link">Divisions</a>
+              <a href="divisions" class="nav-link <?= ($activePage == 'divisions') ? 'text-bold text-primary active':''; ?>">Divisions</a>
               </li>
               <li class="nav-item">
-              <a href="accounts" class="nav-link">Accounts</a>
+              <a href="accounts" class="nav-link <?= ($activePage == 'accounts') ? 'text-bold text-primary active':''; ?>">Accounts</a>
               </li>
         </ul>
 
