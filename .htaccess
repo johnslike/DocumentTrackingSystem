@@ -1,4 +1,5 @@
 
+ErrorDocument 404 /DTS/404error.php
 
 RewriteEngine On
 
@@ -7,13 +8,24 @@ RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php [L]
 
 
-
-
-
-
-
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.html -f
 RewriteRule ^(.*)$ $1.html [L]
 RewriteCond %{THE_REQUEST} /([^.]+).html [NC]
 RewriteRule ^ /%1 [NC,L,R]
+
+
+# Disable directory browsing
+Options -Indexes
+
+
+# secure htaccess file
+<Files .htaccess>
+ order allow,deny
+ deny from all
+</Files>
+
+
+
+
+

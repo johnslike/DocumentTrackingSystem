@@ -572,6 +572,7 @@ include('../Header/Header.php');
                                         <th>Action</th>
                                         <th>Division</th>
                                         <th>Acted by</th>
+
                                         <th>Remarks</th>
                                         <th>Date Acted</th>
                                       </tr>
@@ -580,13 +581,44 @@ include('../Header/Header.php');
                                       <tr>
                                       <?php
                                         $document_id = $documents['id'];
-                                          $query2 = $con->query("SELECT t1.*, t2.division, t3.fname, t3.minitial, t3.lname, t3.suffix FROM document_log t1 LEFT JOIN setting_divisions t2 ON t1.acted_by_division_id = t2.id LEFT JOIN setting_users t3 ON t1.acted_by_user_id = t3.id WHERE document_id = $document_id GROUP BY t1.id ORDER BY t1.date_acted ASC");
+                                          $query2 = $con->query("SELECT t1.*, t2.division, t3.fname, t3.minitial, t3.lname, t3.suffix, t3.picture, t3.contact_no, t3.email_add, t4.position FROM document_log t1 LEFT JOIN setting_divisions t2 ON t1.acted_by_division_id = t2.id LEFT JOIN setting_users t3 ON t1.acted_by_user_id = t3.id LEFT JOIN setting_positions t4 ON t3.position_id = t4.id WHERE document_id = $document_id GROUP BY t1.id ORDER BY t1.date_acted ASC");
                                           while($track_documents = $query2->fetch_assoc()){
                                       ?>
 
                                         <td style="width: 120px"><i><span class="text-sm"><?php if($track_documents['status'] == 2){ echo "Forwarded to";}elseif($track_documents['status'] == 3){echo "Received by";}elseif($track_documents['status'] == 4){echo "End Cycle by";}elseif($track_documents['status'] == 5){echo "Returned by";}?></span></i></td>
                                         <td><?php echo $track_documents['division'] ?></td>
-                                        <td><?php echo $track_documents['fname']." ".$track_documents['minitial']." ".$track_documents['lname']." ".$track_documents['suffix'] ?></td>
+                                        <!-- <td><?php echo $track_documents['fname']." ".$track_documents['minitial']." ".$track_documents['lname']." ".$track_documents['suffix'] ?></td> -->
+                                        <td><!-- Right navbar links -->
+                                        <ul class="navbar-nav ml-auto">
+                                          <!-- Navbar Search -->
+
+                                          <!-- Messages Dropdown Menu -->
+                                          <li class="dropdown">
+                                            <a class="nav-link" data-toggle="dropdown" href="#">
+                                              <span class="badge badge-info text-xs"><?php echo $track_documents['fname']." ".$track_documents['minitial']." ".$track_documents['lname']." ".$track_documents['suffix'] ?></span>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-xl dropdown-menu">
+                                              <a href="#" class="dropdown-item">
+                                                <!-- Message Start -->
+                                                <div class="media">
+                                                  <img src="../files/profile_pic/<?php echo $track_documents['picture'] ?>" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                                  <div class="media-body">
+                                                    <h3 class="dropdown-item-title ">
+                                                    <?php echo $track_documents['position']; ?>
+                                                    </h3>
+                                                    <p class="text-sm"><i class="fas fa-sms"></i> <?php echo $track_documents['contact_no']; ?></p>
+                                                    <p class="text-sm"><i class="fas fa-at"></i> <?php echo $track_documents['email_add']; ?></p>
+                                                  </div>
+                                                </div>
+                                                <!-- Message End -->
+                                              </a>
+                                              <!-- <div class="dropdown-divider"></div>
+                                              <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                                            </div> -->
+                                          </li>
+                                          <!-- Notifications Dropdown Menu -->
+
+                                        </ul></td>
                                         <td><?php echo $track_documents['remarks'] ?></td>
                                         <td class="text-xs"><?php
 

@@ -518,7 +518,7 @@ Class JOS {
          // Pay attention to $static_final_name
          if(move_uploaded_file($tmp_name_array[$i], "../files/document_files/".$static_final_name)){
           $connection = $this->openConnection();
-          $stmt = $connection->prepare("INSERT INTO files(`document_id`, `tracking_no`, `renamed`, `original_name`, uploaded_by) VALUES(?,?,?,?,?)");
+          $stmt = $connection->prepare("INSERT INTO document_files(`document_id`, `tracking_no`, `renamed`, `original_name`, uploaded_by) VALUES(?,?,?,?,?)");
           $stmt->execute([$id, $tracking_no, $static_final_name, $name_array[$i], $user_id]);
             echo header("Location:DocumentDetails?id=".$id);
          } else {
@@ -606,7 +606,7 @@ Class JOS {
     public function show_404(){
 
         http_response_code(404);
-        echo "Page not found";
+        echo header ("Location:../404error");
         die;
 
     }
@@ -632,7 +632,7 @@ Class JOS {
     public function get_files($id){
 
       $connection = $this->openConnection();
-      $stmt = $connection->prepare("SELECT t1.id, t2.id as file_id, t2.* FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN files t2 on t1.id = t2.document_id ORDER BY t2.date_added DESC");
+      $stmt = $connection->prepare("SELECT t1.id, t2.id as file_id, t2.* FROM (SELECT * from documents WHERE id = ?) t1 LEFT JOIN document_files t2 on t1.id = t2.document_id ORDER BY t2.date_added DESC");
       $stmt->execute([$id]);
       $file = $stmt->fetchall();
       $total= $stmt->rowCount();
@@ -723,7 +723,7 @@ Class JOS {
       if($total > 0){
           return $Details;
       }else{
-          return FALSE;
+          return $this->show_404();
       }
     }
 
@@ -739,7 +739,7 @@ Class JOS {
       if($total > 0){
           return $Details;
       }else{
-          return FALSE;
+          return $this->show_404();
       }
     }
 
@@ -747,7 +747,7 @@ Class JOS {
     public function getTrackingno($id){
 
       $connection = $this->openConnection();
-      $stmt = $connection->prepare("SELECT t1.*, t2.division, t3.fname, t3.minitial, t3.lname, t3.suffix FROM document_log t1 LEFT JOIN setting_divisions t2 ON t1.acted_by_division_id = t2.id LEFT JOIN setting_users t3 ON t1.acted_by_user_id = t3.id WHERE document_id = ? GROUP BY t1.id ORDER BY t1.date_acted ASC");
+      $stmt = $connection->prepare("SELECT t1.*, t2.division, t3.fname, t3.minitial, t3.lname, t3.suffix, t3.picture, t3.contact_no, t3.email_add, t4.position FROM document_log t1 LEFT JOIN setting_divisions t2 ON t1.acted_by_division_id = t2.id LEFT JOIN setting_users t3 ON t1.acted_by_user_id = t3.id LEFT JOIN setting_positions t4 ON t3.position_id = t4.id WHERE document_id = ? GROUP BY t1.id ORDER BY t1.date_acted ASC");
       $stmt->execute([$id]);
       $Details = $stmt->fetchall();
       $total= $stmt->rowCount();
@@ -970,7 +970,7 @@ Class JOS {
             if(unlink($file_delete)){
 
                 $connection = $this->openConnection();
-                $connection->query("DELETE FROM `files` WHERE `id` = '$file_id'");
+                $connection->query("DELETE FROM `document_files` WHERE `id` = '$file_id'");
 
                 echo header("Location:DocumentDetails?id=".$id);
             }else{

@@ -182,7 +182,37 @@ include('../Header/Header.php');
 
                                         <td style="width: 120px"><i><span class="text-sm"><?php if($Tracks['status'] == 2){ echo "<h7 class='text text-primary'>Forwarded to</h7>";}elseif($Tracks['status'] == 3){echo "<h7 class='text text-success'>Received by</h7>";}elseif($Tracks['status'] == 4){echo "<h9 class='text text-bold text-warning'>End Cycle by</h9>";}elseif($Tracks['status'] == 5){echo "<h7 class='text text-danger'>Returned to</h7>";}?></span></i></td>
                                         <td class="text-sm"><?php echo $Tracks['division'] ?></td>
-                                        <td class="text-sm"><?php echo $Tracks['fname']." ".$Tracks['minitial']." ".$Tracks['lname']." ".$Tracks['suffix'] ?></td>
+                                        <td><!-- Right navbar links -->
+                                        <ul class="navbar-nav ml-auto">
+                                          <!-- Navbar Search -->
+
+                                          <!-- Messages Dropdown Menu -->
+                                          <li class="dropdown">
+                                            <a class="nav-link" data-toggle="dropdown" href="#">
+                                              <span class="badge badge-info text-xs"><?php echo $Tracks['fname']." ".$Tracks['minitial']." ".$Tracks['lname']." ".$Tracks['suffix'] ?></span>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-xl dropdown-menu">
+                                              <a href="#" class="dropdown-item">
+                                                <!-- Message Start -->
+                                                <div class="media">
+                                                  <img src="../files/profile_pic/<?php echo $Tracks['picture'] ?>" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                                  <div class="media-body">
+                                                    <h3 class="dropdown-item-title ">
+                                                    <?php echo $Tracks['position']; ?>
+                                                    </h3>
+                                                    <p class="text-sm"><i class="fas fa-sms"></i> <?php echo $Tracks['contact_no']; ?></p>
+                                                    <p class="text-sm"><i class="fas fa-at"></i> <?php echo $Tracks['email_add']; ?></p>
+                                                  </div>
+                                                </div>
+                                                <!-- Message End -->
+                                              </a>
+                                              <!-- <div class="dropdown-divider"></div>
+                                              <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                                            </div> -->
+                                          </li>
+                                          <!-- Notifications Dropdown Menu -->
+
+                                        </ul></td>
                                         <td class="text-sm"><?php echo $Tracks['remarks'] ?></td>
                                         <td class="text-xs"><?php
 
@@ -236,8 +266,8 @@ include('../Header/Header.php');
                       <div class="form-group">
                       <label>Files:</label>
                       <div class="custom-file">
-                      <input type="file" class="custom-file-input" name="files[]" multiple="multiple">
-                      <label class="custom-file-label" >Choose file</label>
+                      <input type="file" class="custom-file-input" name="files[]" multiple="multiple" id="exampleInputFile">
+                      <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                     </div>
 
                       </div>

@@ -236,8 +236,8 @@ include('../Header/Header.php');
                       <div class="form-group">
                       <label>Files:</label>
                       <div class="custom-file">
-                      <input type="file" class="custom-file-input" name="files[]" multiple="multiple">
-                      <label class="custom-file-label" >Choose file</label>
+                      <input type="file" class="custom-file-input" name="files[]" multiple="multiple" id="exampleInputFile">
+                      <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                     </div>
 
                       </div>

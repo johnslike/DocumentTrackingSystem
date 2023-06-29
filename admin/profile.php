@@ -86,7 +86,7 @@ include('../Header/Header.php');
                 </ul>
 
                 <a href="#" class="btn btn-success btn-block" data-toggle="modal" data-target="#edit_employee"><b>Edit</b></a>
-                <a href="#" class="btn btn-primary btn-block" data-toggle="modal" data-target="#upload_file"><b>Upload File/s</b></a>
+                <!-- <a href="#" class="btn btn-primary btn-block" data-toggle="modal" data-target="#upload_file"><b>Upload File/s</b></a> -->
                 <a href="employees" class="btn btn-info btn-block"><b>Back to Employees List</b></a>
               </div>
               <!-- /.card-body -->
